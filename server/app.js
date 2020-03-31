@@ -5,6 +5,7 @@ const bodyParser = require('body-parser'); // Body 데이터를 분석(parse)해
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var videoRouter = require('./routes/video');
 
 var app = express();
 
@@ -19,5 +20,6 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/video', videoRouter);
 
 module.exports = app;

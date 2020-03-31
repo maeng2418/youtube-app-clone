@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Button, Form, message, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Dropzone from 'react-dropzone';
+import axios from 'axios';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -25,6 +26,28 @@ const VideoUploadPage = () => {
     const [Private, setPrivate] = useState(0);
     const [Category, setCategory] = useState("Film & Animation");
 
+    const onDrop = (files) => {
+        
+        let formData =new FormData;
+        
+        // 파일 전송시 오류 안나게 헤더 추가
+        const config = {
+            header: { 'content-type': 'multipart/form-data' }    
+        }
+        formData.append("file", files[0]);
+
+        axios.post('/api/video/uploadfiles', formData, config)
+        .then(response => {
+
+            if(response.data.success) {
+                console.log(response.data);
+            } else {
+                alert("비디오 업로드를 실패했습니다.");
+            }
+            
+        })
+    }
+
     return (
         <div style={{ minWidth: '700px', margin: '2rem auto'}}>
             <div style={{ textAlign: 'center', marginBottom: '2rem'}}>
@@ -36,8 +59,8 @@ const VideoUploadPage = () => {
                     {/* Drop zone */}
 
                     <Dropzone
-                        onDrop
-                        multiple={false}
+                        onDrop={onDrop} // 파일 올릴때 일어나는 이벤트
+                        multiple={false} // 한번에 파일을 많이 올릴 것인가?
                         maxSize={800000000}>
                         {({ getRootProps, getInputProps }) => (
                             <div style={{ width: '300px', height: '240px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -52,7 +75,7 @@ const VideoUploadPage = () => {
 
                     {/* Thumbnail */}
                     <div>
-                        <img src alt />
+                        {/* <img src alt /> */}
                     </div>
 
                 </div>
