@@ -7,16 +7,18 @@ import LoginPage from 'components/LoginPage';
 import RegisterPage from 'components/RegisterPage';
 import NavBar from 'components/NavBar';
 import Footer from 'components/Footer';
+import VideoUploadPage from 'components/VideoUploadPage';
 
 function App() {
   return (
       <Suspense fallback={(<div>Loading...</div>)}>
         <NavBar />
-        <div style={{display: 'flex', minHeight: 'calc(100vh - 80px'}}>
+        <div style={{display: 'flex', paddingTop:'3.5rem', minHeight: 'calc(100vh - 80px'}}>
           <Switch>
             <Route exact path="/" component={Auth(LandingPage, null, true)}/>
             <Route exact path="/login" component={Auth(LoginPage, false)}/>
             <Route exact path="/register" component={Auth(RegisterPage, false)}/>
+            <Route exact path="/video/upload" component={Auth(VideoUploadPage, true)}/>
           </Switch>
         </div>
         <Footer />
