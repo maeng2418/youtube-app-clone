@@ -21,5 +21,6 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/video', videoRouter);
+app.use('/uploads', express.static('uploads'));
 
 module.exports = app;
