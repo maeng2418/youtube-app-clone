@@ -3,6 +3,8 @@ import { Typography, Button, Form, message, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -19,7 +21,7 @@ const CategoryOptions = [
     { value: 3, label: "Pets & Animals" }
 ];
 
-const VideoUploadPage = () => {
+const VideoUploadPage = (props) => {
 
     const [VideoTitle, setVideoTitle] = useState("");
     const [Description, setDescription] = useState("");
@@ -28,10 +30,12 @@ const VideoUploadPage = () => {
     const [FilePath, setFilePath] = useState("");
     const [Duration, setDuration] = useState("");
     const [ThumbnailPath, setThumbnailPath] = useState("");
+    
+    const user = useSelector(state => state.user);
 
     const onDrop = (files) => {
 
-        let formData = new FormData;
+        let formData = new FormData();
 
         // 파일 전송시 오류 안나게 헤더 추가
         const config = {
@@ -44,14 +48,14 @@ const VideoUploadPage = () => {
 
                 if (response.data.success) {
 
-                    let variable = {
+                    let variables = {
                         filePath: response.data.filePath,
                         fileName: response.data.fileName
                     }
 
                     setFilePath(response.data.filePath);
 
-                    axios.post('/api/video/thumbnail', variable)
+                    axios.post('/api/video/thumbnail', variables)
                         .then(response => {
                             if (response.data.success) {
 
@@ -69,12 +73,42 @@ const VideoUploadPage = () => {
             })
     }
 
+    const onSubmit = (e) => {
+
+        const variables = {
+            writer: user.userData._id,
+            title: VideoTitle,
+            description: Description,
+            privacy: Private,
+            filePath: FilePath,
+            category: Category,
+            duration: Duration,
+            thumbnail: ThumbnailPath,
+        }
+
+        axios.post('/api/video/uploadVideo', variables)
+        .then(response => {
+
+            if(response.data.success) {
+
+                message.success('성공적으로 업로드를 했습니다.');
+
+                setTimeout(()=>{
+                    props.history.push('/');
+                }, 3000);
+                
+            } else {
+                alert("비디오 업로드에 실패했습니다.")
+            }
+        })
+    }
+
     return (
         <div style={{ minWidth: '700px', margin: '2rem auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <Title level={2}>Upload Video</Title>
             </div>
-            <Form onFinish>
+            <Form onFinish={onSubmit}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                     {/* Drop zone */}
@@ -110,6 +144,7 @@ const VideoUploadPage = () => {
                 <Input
                     onChange={(e) => setVideoTitle(e.target.value)}
                     value={VideoTitle}
+                    name="VideoTitle"
                 />
                 <br />
                 <br />
@@ -117,11 +152,12 @@ const VideoUploadPage = () => {
                 <TextArea
                     onChange={(e) => setDescription(e.target.value)}
                     value={Description}
+                    name="Description"
                 />
                 <br />
                 <br />
 
-                <select onChange={(e) => setPrivate(e.target.value)}>
+                <select onChange={(e) => setPrivate(e.target.value)} name="Private">
                     {PrivateOptions.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
                     ))}
@@ -129,7 +165,7 @@ const VideoUploadPage = () => {
                 <br />
                 <br />
 
-                <select onChange={(e) => setCategory(e.target.value)}>
+                <select onChange={(e) => setCategory(e.target.value)} name="Category">
                     {CategoryOptions.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
                     ))}
@@ -137,10 +173,10 @@ const VideoUploadPage = () => {
                 <br />
                 <br />
 
-                <Button type="primary" size="large" onClick>Submit</Button>
+                <Button type="primary" size="large" htmlType="submit" >Submit</Button>
             </Form>
         </div>
     );
 }
 
-export default VideoUploadPage;
+export default withRouter(VideoUploadPage);

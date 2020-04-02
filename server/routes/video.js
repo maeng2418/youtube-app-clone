@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const config = require('../config/key'); // mongoURI 가져오기
-//const { Video } = require('../models/Video'); // 비디오 모델 가져오기
-const { auth } = require('../middleware/auth'); // auth 미들웨어 가져오기
+const { Video } = require('../models/Video'); // 비디오 모델 가져오기
 const multer = require('multer'); // 노드 서버에 파일을 저장하기 위함.
 const ffmpeg = require('fluent-ffmpeg');
 
@@ -84,5 +83,16 @@ router.post('/thumbnail', (req, res) => {
             filename: 'thumbnail-%b.png'
         })
 })
+
+router.post('/uploadVideo', (req, res) => {
+
+    // 비디오 정보들을 저장한다.
+    const video = new Video(req.body);
+
+    video.save((err, doc) => {
+        if(err) return res.json({success: false, err});
+        res.status(200).json({ success: true });
+    });
+});
 
 module.exports = router;
