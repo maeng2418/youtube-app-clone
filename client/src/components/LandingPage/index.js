@@ -31,7 +31,7 @@ function LandingPage(props) {
 
     return (
       <Col key={index} lg={6} md={8} xs={24}>
-        <Link to={`/vdieo/post/${video._id}`}>
+        <Link to={`/video/${video._id}`}>
           <div style={{ position: 'relative' }}>
             <img style={{ width: '100%' }} src={`http://localhost:4000/${video.thumbnail}`} alt="thumbnail" />
             <div className={styles.duration}>
