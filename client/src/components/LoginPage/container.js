@@ -8,6 +8,7 @@ const Container = (props) => {
     props.loginUser(body)
       .then(response => {
         if (response.payload.loginSuccess) {
+          localStorage.setItem('userId', response.payload.userId);
           props.history.push('/'); // 로그인 성공시 페이지 이동
         } else {
           alert("Error");
