@@ -30,7 +30,7 @@ router.post("/subscribed", (req, res) => {
         if(subscribe.length !== 0) {
             result = true
         }
-        res.status(200).json({ success: true, subcribed: result  })
+        res.status(200).json({ success: true, subscribed: result  })
     })
 
 });
