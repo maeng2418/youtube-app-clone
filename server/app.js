@@ -8,6 +8,7 @@ var usersRouter = require('./routes/users');
 var videoRouter = require('./routes/video');
 var subscribeRouter = require('./routes/subscribe');
 var commentRouter = require('./routes/comment');
+var likeRouter = require('./routes/like');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/video', videoRouter);
 app.use('/api/subscribe', subscribeRouter);
 app.use('/api/comment', commentRouter);
+app.use('/api/like', likeRouter);
 app.use('/uploads', express.static('uploads'));
 
 module.exports = app;

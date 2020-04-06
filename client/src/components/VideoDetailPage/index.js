@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
 import Comment from './Sections/Comment';
+import LikeDislike from './Sections/LikeDislike';
 import { useSelector } from 'react-redux';
 
 const VdieoDetailPage = (props) => {
@@ -51,7 +52,7 @@ const VdieoDetailPage = (props) => {
                         <video style={{ width: '100%' }} src={`http://localhost:4000/${VideoDetail.filePath}`} controls />
     
                         <List.Item
-                            actions={[subscribeButton]}
+                            actions={[<LikeDislike video userId={localStorage.getItem('userId')} videoId={props.match.params.videoId}/>, subscribeButton]}
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={VideoDetail.writer.image}/>}
