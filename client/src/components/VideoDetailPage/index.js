@@ -4,11 +4,15 @@ import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
+import Comment from './Sections/Comment';
+import { useSelector } from 'react-redux';
 
 const VdieoDetailPage = (props) => {
 
     const variable = { videoId: props.match.params.videoId };
     const [VideoDetail, setVideoDetail] = useState([]);
+    const [Comments, setComments] = useState([]);
+    const user = useSelector(state => state.user);
 
     useEffect(() => {
 
@@ -19,13 +23,26 @@ const VdieoDetailPage = (props) => {
             } else {
                 alert("비디오 정보를 가져오길 실패했습니다.");
             }
+        });
+
+        axios.post('/api/comment/getComments', variable)
+        .then(response => {
+            if(response.data.success) {
+                setComments(response.data.comments);
+            } else {
+                alert('코멘트 정보를 가져오는 것을 실패하였습니다.');
+            }
         })
 
     }, []);
 
+    const refreshFunction = (newComment) => {
+        setComments((Comments.concat(newComment)));
+    };
+
     if(VideoDetail.writer) {
 
-        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id}/>
+        const subscribeButton = (VideoDetail.writer._id !== localStorage.getItem('userId') && user.userData.isAuth !== false) && <Subscribe userTo={VideoDetail.writer._id}/>
 
         return (
             <Row gutter={[16, 16]} style={{width: '100%'}}>
@@ -41,7 +58,8 @@ const VdieoDetailPage = (props) => {
                                 title={VideoDetail.writer.name}
                                 description={VideoDetail.description} />
                         </List.Item>
-                        {/* Commnets */}
+                        {/* Comments */}
+                        <Comment refreshFunction={refreshFunction} commentLists={Comments} />
                     </div>
                 </Col>
                 <Col lg={6} xs={24}>
